@@ -136,9 +136,11 @@ let g:quickrun#default_config = {
 \ },
 \ 'go': {
 \   'type':
+\     executable('8g') || executable('6g') || executable('5g') ?
 \     $GOARCH ==# '386'   ? (s:is_win ? 'go/386/win' : 'go/386'):
 \     $GOARCH ==# 'amd64' ? 'go/amd64':
-\     $GOARCH ==# 'arm'   ? 'go/arm': '',
+\     $GOARCH ==# 'arm'   ? 'go/arm': '' :
+\     executable('go') ? (s:is_win ? 'go/go/win' : 'go/go'): '',
 \ },
 \ 'go/386': {
 \   'exec': ['8g %o -o %s:p:r.8 %s', '8l -o %s:p:r %s:p:r.8',
@@ -163,6 +165,16 @@ let g:quickrun#default_config = {
 \            '%s:p:r %a', 'rm -f %s:p:r'],
 \   'tempfile': '%{tempname()}.go',
 \   'hook/output_encode/encoding': 'utf-8',
+\ },
+\ 'go/go': {
+\   'exec': ['(cd %s:p:h & go run %s:p:t)'],
+\   'tempfile': '%{tempname()}.go',
+\   'output_encode': 'utf-8',
+\ },
+\ 'go/go/win': {
+\   'exec': ['cmd /c (cd %s:p:h ^\& go run %s:p:t)'],
+\   'tempfile': '%{tempname()}.go',
+\   'output_encode': 'utf-8',
 \ },
 \ 'groovy': {
 \   'cmdopt': '-c %{&fenc==#""?&enc:&fenc}'
